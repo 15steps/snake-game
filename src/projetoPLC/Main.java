@@ -56,7 +56,17 @@ public class Main extends PApplet {
 		} else {
 			background(0);
 			image(gameOver, -190, -150, 400, 200);
+			text("Press R to restart", -50, 50);
+			if(key == 'r' && keyPressed)
+				reset();
 		}
+	}
+	
+	public void reset() {
+		snake = new Player(this, size);
+		_keyListener = new RunnableKeyListener(this, snake);
+		_keyListener.start();
+		score = 0;
 	}
 	
 	public void drawFood() {
@@ -76,9 +86,9 @@ public class Main extends PApplet {
 		}
 	}
 	
-	public void mousePressed() {
-		snake.length++;
-	}
+//	public void mousePressed() {
+//		snake.length++;
+//	}
 	
 	public void drawFrameRate() {
 		text(String.format("FPS: %.3g%n", frameRate), 220, 270);

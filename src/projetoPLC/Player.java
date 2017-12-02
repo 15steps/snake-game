@@ -44,9 +44,6 @@ public class Player {
 		int halfScreen = canvas_size/2;
 		x = x > halfScreen || x < -halfScreen ? (-1)*x : x;
 		y = y > halfScreen || y < -halfScreen ? (-1)*y : y;
-		
-//		x = PApplet.constrain(x, 0, (canvas_size)/2-(gridScale * tail.size()));
-//		y = PApplet.constrain(y, 0, (canvas_size)/2-(gridScale * tail.size()));
 	}
 	
 	public boolean eatFood(PVector v) {
