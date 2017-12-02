@@ -40,13 +40,36 @@ public class Player {
 		
 		x = x + xSpeed*gridScale;
 		y = y + ySpeed*gridScale;
+				
+		int halfScreen = canvas_size/2;
+		x = x > halfScreen || x < -halfScreen ? (-1)*x : x;
+		y = y > halfScreen || y < -halfScreen ? (-1)*y : y;
 		
 //		x = PApplet.constrain(x, 0, (canvas_size)/2-(gridScale * tail.size()));
 //		y = PApplet.constrain(y, 0, (canvas_size)/2-(gridScale * tail.size()));
 	}
 	
+	public boolean eatFood(PVector v) {
+		if(PApplet.dist(x, y, v.x, v.y) < 1) {
+			this.length++;
+			return true;
+		}
+		return false;
+	}
+	
 	public void changeDir(float x, float y) {
-		this.xSpeed = x;
-		this.ySpeed = y;
+		if(xSpeed != x && ySpeed != y) {
+			this.xSpeed = x;
+			this.ySpeed = y;		
+		}
+	}
+	
+	public boolean gameOver() {
+		for(PVector v : tail) {
+			if(PApplet.dist(x, y, v.x, v.y) < 1) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
