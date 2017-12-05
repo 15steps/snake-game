@@ -1,6 +1,7 @@
 package projetoPLC;
 
 import java.util.ArrayList;
+import java.util.Queue;
 
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -12,14 +13,17 @@ public class Player {
 	float xSpeed = 1;
 	float ySpeed = 0;
 	int canvas_size;
-	int gridScale = 20;
+	int gridScale = 15;
 	ArrayList<PVector> tail = new ArrayList<>();
+	Queue<PVector> foodQ;
 	
 	PApplet p;
 	
-	Player (PApplet parent, int size) {
+	Player (PApplet parent, int size, int scale, Queue<PVector> q) {
 		p = parent;
 		this.canvas_size = size;
+		gridScale = scale;
+		foodQ = q;
 	}	
 	
 	void display () {
@@ -46,10 +50,12 @@ public class Player {
 		y = y > halfScreen || y < -halfScreen ? (-1)*y : y;
 	}
 	
-	public boolean eatFood(PVector v) {
-		if(PApplet.dist(x, y, v.x, v.y) < 1) {
-			this.length++;
-			return true;
+	public boolean eatFood() {
+		for (PVector v : foodQ) {
+			if(PApplet.dist(x, y, v.x, v.y) < 1) {
+				this.length++;
+				return true;
+			}			
 		}
 		return false;
 	}
@@ -57,7 +63,7 @@ public class Player {
 	public void changeDir(float x, float y) {
 		if(xSpeed != x && ySpeed != y) {
 			this.xSpeed = x;
-			this.ySpeed = y;		
+			this.ySpeed = y;	
 		}
 	}
 	

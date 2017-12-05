@@ -18,6 +18,8 @@ public class Main extends PApplet {
 	int score = 0;
 	BlockingQueue<PVector> foodQ = new ArrayBlockingQueue<>(1);
 	PImage gameOver;
+	int scale = 30;
+	boolean toggleGrid = false;
 	
 	
 	public static void main(String[] args) {
@@ -31,25 +33,26 @@ public class Main extends PApplet {
 	public void setup () {
 		gameOver = loadImage("game_over.jpg");
 		colorMode(HSB);
-		snake = new Player(this, size);
-		frameRate(7);
+		snake = new Player(this, size, scale, foodQ);
+		frameRate(5);
 		keyRepeatEnabled = false;
 		_keyListener = new RunnableKeyListener(this, snake);
 		_keyListener.start();
-		foodGenerator = new FoodGenerator(foodQ, this, size);
+		foodGenerator = new FoodGenerator(foodQ, this, size, scale);
 		foodGenerator.start();
 		takeFood();
 	}
 	
 	public void draw () {
-		translate(300, 300);
+		translate(size/2, size/2);
 		if(!snake.gameOver()) {
+			noStroke();
+			snake.move();
 			background(background);
-			if(snake.eatFood(foodLocation)) {
+			if(foodQ.peek() != null && snake.eatFood()) {
 				takeFood();
 				score++;
-			} 	
-			snake.move();
+			}
 			snake.display();
 			drawFood();
 			drawFrameRate();
@@ -60,18 +63,20 @@ public class Main extends PApplet {
 			if(key == 'r' && keyPressed)
 				reset();
 		}
+		if(toggleGrid)
+			drawGrid();
 	}
 	
 	public void reset() {
-		snake = new Player(this, size);
+		snake = new Player(this, size, scale, foodQ);
 		_keyListener = new RunnableKeyListener(this, snake);
 		_keyListener.start();
 		score = 0;
 	}
 	
 	public void drawFood() {
-		fill(5, 255, 255);
-		rect(foodLocation.x, foodLocation.y, 20,20);
+		fill(frameCount % 256, 255, 255);
+		foodQ.forEach(location -> rect(location.x, location.y, scale, scale));
 	}
 	
 	public void takeFood() {
@@ -86,13 +91,28 @@ public class Main extends PApplet {
 		}
 	}
 	
-//	public void mousePressed() {
-//		snake.length++;
-//	}
-	
 	public void drawFrameRate() {
-		text(String.format("FPS: %.3g%n", frameRate), 220, 270);
-		text(String.format("Score: " + score, frameRate), 220, 290);
+		textSize(20);
+		fill(100, 255, 255);
+		text(String.format("FPS: %.3g%n", frameRate), 210, 270);
+		text(String.format("Score: " + score, frameRate), 210, 290);
+	}
+	
+	public void drawGrid() {
+		translate(-size/2,-size/2);
+		for (int i = 0; i < size/scale; ++i) {
+			for (int j = 0; j < size/scale; ++j) {
+				stroke(200);
+				line(i, j*scale, i+size, j*scale);
+				line(i*scale, j, i*scale, j+size);
+			}
+		}
+		noStroke();
+	}
+	
+	public void keyPressed() {
+		if(key == 'g')
+			toggleGrid = !toggleGrid;
 	}
 	
 }

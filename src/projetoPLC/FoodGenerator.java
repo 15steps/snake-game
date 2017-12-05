@@ -10,47 +10,42 @@ public class FoodGenerator extends Thread{
 	PApplet p;
 	PVector foodLocation;
 	int size;
+	int scale;
 	
-	public FoodGenerator(BlockingQueue<PVector> q, PApplet app, int size) {
+	public FoodGenerator(BlockingQueue<PVector> q, PApplet app, int size, int scale) {
 		p = app;
 		foodQ = q;
 		this.size = size;
+		this.scale = scale;
 	}
 	
 	@Override
 	public void run() {
 		while(true) {
-				if(foodQ.isEmpty())  {
-					generateFood();
-					foodQ.add(foodLocation);			
-				} else {
-					try {
-						synchronized (this) {
-							wait();
-						}
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-				
+				generateFood();
+				try {
+					foodQ.put(foodLocation);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}							
 			}
 	}
 	
 	public void generateFood() {
-		int cols = size/20;
+		int cols = size/scale;
 		float x = PApplet.floor(p.random(cols));
 		float y = PApplet.floor(p.random(cols));
 		this.foodLocation = new PVector(x,y);
-		foodLocation.mult(20);
-		foodLocation.x = foodLocation.x % 300;
-		foodLocation.y = foodLocation.y % 300;
+		foodLocation.mult(scale);
+		foodLocation.x = foodLocation.x % (size/2);
+		foodLocation.y = foodLocation.y % (size/2);
 		System.out.println("generateFood");
 	}
 	
 	public void drawFood() {
 		p.fill(5, 255, 255);
-		p.rect(foodLocation.x, foodLocation.y, 20,20);
+		p.rect(foodLocation.x, foodLocation.y, scale,scale);
 //		System.out.println(foodLocation.x + " " + foodLocation.y);
 	}
 	
