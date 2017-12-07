@@ -40,7 +40,6 @@ public class FoodGenerator extends Thread{
 		foodLocation.mult(scale);
 		foodLocation.x = foodLocation.x % (size/2);
 		foodLocation.y = foodLocation.y % (size/2);
-		System.out.println("generateFood");
 	}
 	
 	public void drawFood() {

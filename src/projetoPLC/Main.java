@@ -83,7 +83,7 @@ public class Main extends PApplet {
 		try {
 			synchronized(foodGenerator) {
 				foodLocation = foodQ.take();
-				foodGenerator.notify();
+				foodGenerator.notify();				
 			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block

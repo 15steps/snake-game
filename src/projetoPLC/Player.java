@@ -27,10 +27,11 @@ public class Player {
 	}	
 	
 	void display () {
-		p.fill(255);
+		p.fill(30, 255, 255);
 		for (PVector v : tail) {
 			p.rect(v.x, v.y, gridScale, gridScale);
 		}
+		p.fill(25, 255, 255);
 		p.rect(x, y, gridScale, gridScale);
 	}
 	
@@ -54,6 +55,7 @@ public class Player {
 		for (PVector v : foodQ) {
 			if(PApplet.dist(x, y, v.x, v.y) < 1) {
 				this.length++;
+				foodQ.remove(v);
 				return true;
 			}			
 		}
